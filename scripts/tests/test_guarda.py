@@ -13,7 +13,7 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "guarda.py"
 # Nombres de prueba: no son de ninguna franquicia.
-PROHIBIDOS = ["zorbulon", "kraxi", "luna verde"]
+PROHIBIDOS = ["zorbulon", "kraxi", "luna verde", "trizorbuquel", "sol de plata"]
 SPRITE = b"\x89PNG\r\n\x1a\nsprite-privado-de-prueba"
 
 
@@ -72,6 +72,26 @@ class GuardaTest(unittest.TestCase):
         h_unido = h(b"zorbulon")
         self.assertIn(h_unido, (Path(self.tmp.name) / "nombres.sha256").read_text())
         self.assertEqual(self.guarda().returncode, 1)
+
+    def test_trio_unido_con_guiones_falla(self) -> None:
+        self.escribir("a.md", "Tri-Zorbu-Quel")
+        self.assertEqual(self.guarda().returncode, 1)
+
+    def test_trio_unido_con_espacios_y_mayusculas_falla(self) -> None:
+        self.escribir("a.md", "el TRI zorbu QUEL de hoy")
+        self.assertEqual(self.guarda().returncode, 1)
+
+    def test_trio_separado_falla(self) -> None:
+        self.escribir("a.md", "un Sol  de\nPlata")
+        self.assertEqual(self.guarda().returncode, 1)
+
+    def test_trio_en_la_ruta_falla(self) -> None:
+        self.escribir("img/tri_zorbu_quel.txt", "nada")
+        self.assertEqual(self.guarda().returncode, 1)
+
+    def test_partes_sueltas_del_trio_pasan(self) -> None:
+        self.escribir("a.md", "tri zorbu y quel")
+        self.assertEqual(self.guarda().returncode, 0)
 
     def test_palabra_parecida_pasa(self) -> None:
         self.escribir("a.md", "zorbulones kraxis luna")

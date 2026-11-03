@@ -1,0 +1,22 @@
+# Guarda del repositorio público: nada del paquete privado (regla de oro; registro 8.35).
+# Corre en cada push y en cada PR. Ver scripts/guarda.py.
+name: Guarda
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guarda:
+    name: Sin contenido privado
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tests de la guarda
+        run: python3 -m unittest discover -s scripts/tests
+      - name: Nombres, sprites y archivos prohibidos
+        run: python3 scripts/guarda.py

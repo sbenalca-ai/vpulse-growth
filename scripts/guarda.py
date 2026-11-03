@@ -2,8 +2,8 @@
 """Guarda contra el contenido privado del Director en vpulse-growth (repositorio público).
 
 Falla si algún archivo versionado:
-  1. contiene un nombre prohibido: cada palabra, cada par de palabras seguidas («a b») y cada par
-     unido («ab») se pasa a minúsculas sin tildes y se compara su SHA-256 con
+  1. contiene un nombre prohibido: cada palabra y cada par y trío de palabras seguidas, separados
+     («a b», «a b c») y unidos («ab», «abc»), se pasa a minúsculas sin tildes y se compara su SHA-256 con
      .github/guarda/nombres.sha256 (la lista nunca está en texto plano; registro 8.35). También se
      revisan las rutas de los archivos;
   2. es una imagen cuyo SHA-256 está en .github/guarda/imagenes.sha256 (sprites de vpulse-species);
@@ -48,13 +48,15 @@ def normalizar(texto: str) -> str:
 
 
 def candidatos(texto: str):
-    """Palabras, pares «a b» y pares unidos «ab», en orden de aparición."""
+    """Palabras, pares y tríos seguidos, separados por espacio («a b», «a b c») y unidos («ab», «abc»)."""
     palabras = PALABRA.findall(normalizar(texto))
     for i, palabra in enumerate(palabras):
         yield palabra
-        if i + 1 < len(palabras):
-            yield f"{palabra} {palabras[i + 1]}"
-            yield f"{palabra}{palabras[i + 1]}"
+        for n in (2, 3):
+            if i + n <= len(palabras):
+                grupo = palabras[i : i + n]
+                yield " ".join(grupo)
+                yield "".join(grupo)
 
 
 def nombres_prohibidos(texto: str, hashes: set[str]) -> int:

@@ -4,7 +4,7 @@ Landing pública y materiales de lanzamiento de V-Pulse.
 
 **Repositorio público.** El workflow **Guarda** (`scripts/guarda.py`) corre en cada push y en cada PR, y falla si encuentra:
 
-- un nombre prohibido, en cualquier palabra o par de palabras de los archivos de texto o en las rutas. La lista vive solo como hashes SHA-256 en `.github/guarda/nombres.sha256`;
+- un nombre prohibido, en cualquier palabra, par o trío de palabras (separadas o unidas, como `a-b-c`) de los archivos de texto o en las rutas. La lista vive solo como hashes SHA-256 en `.github/guarda/nombres.sha256`;
 - una imagen idéntica a un sprite privado (`.github/guarda/imagenes.sha256`);
 - un `species.json` o un paquete de Android (`.apk`, `.aab`, `.apks`).
 
